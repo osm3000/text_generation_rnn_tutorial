@@ -17,7 +17,9 @@ class SimpleGRU(nn.Module):
         The in_seq should have the shape (batch size X sequence length X sequence dimension)
         """
         timesteps = in_seq.size(1)
-        h_t = Variable(torch.zeros(in_seq.size(0), self.hidden_size), requires_grad=False).cuda()
+        h_t = Variable(torch.zeros(in_seq.size(0), self.hidden_size), requires_grad=False)
+        if torch.cuda.is_available():
+            h_t.cuda()
 
         # Apply the GRU first, step by step
         for i in range(timesteps):
@@ -28,5 +30,6 @@ class SimpleGRU(nn.Module):
 
         # Finally, apply the softmax function
         final_output = F.log_softmax(dense_output)
+        # final_output = F.softmax(dense_output)
 
         return final_output
