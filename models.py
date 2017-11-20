@@ -19,7 +19,7 @@ class SimpleGRU(nn.Module):
         timesteps = in_seq.size(1)
         h_t = Variable(torch.zeros(in_seq.size(0), self.hidden_size), requires_grad=False)
         if torch.cuda.is_available():
-            h_t.cuda()
+            h_t = h_t.cuda()
 
         # Apply the GRU first, step by step
         for i in range(timesteps):

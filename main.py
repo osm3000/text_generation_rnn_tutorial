@@ -13,8 +13,9 @@ import sys
 import random
 
 # Load the data - cropus
-with open('nietzsche.txt', "r") as fileHandle:
+with open('nietzsche.txt', "r", encoding="iso-8859-1") as fileHandle:
     text = fileHandle.read().lower()
+    # text = fileHandle.read().decode().lower()
 print('\ncorpus length:', len(text))
 
 # Get the unique characters in the corpus
@@ -25,7 +26,7 @@ char_indices = dict((c, i) for i, c in enumerate(chars))
 indices_char = dict((i, c) for i, c in enumerate(chars))
 
 # cut the text in sequences (windows) of 'maxlen' characters
-maxlen = 40
+maxlen = 100
 step = 3
 sentences = []
 next_chars = []
@@ -58,7 +59,7 @@ optimizer = Adam(rnn_model.parameters(), lr=0.005)
 loss_funtion = torch.nn.NLLLoss() # Since I am using LogSoftmax, I use NLLLoss function
 
 batch_size = 2048 # How much data to process in parallel
-train_mode = False # If you want to train and store models --> Not using them for generation, yet
+train_mode = True # If you want to train and store models --> Not using them for generation, yet
 nb_epochs = 150
 if train_mode:
     for epoch in range(nb_epochs):
@@ -71,8 +72,8 @@ if train_mode:
             X_batch = Variable(torch.from_numpy(X_batch).float(), requires_grad=False)
             y_batch = Variable(torch.from_numpy(y_batch).long(), requires_grad=False)
             if torch.cuda.is_available():
-                X_batch.cuda()
-                y_batch.cuda()
+                X_batch = X_batch.cuda()
+                y_batch = y_batch.cuda()
 
             model_output = rnn_model.forward(X_batch)
 
